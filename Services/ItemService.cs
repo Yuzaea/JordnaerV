@@ -25,36 +25,35 @@ namespace Jordnaer.Services
             {
                 using (SqlCommand command = new SqlCommand(insertSQL, connection))
                 {
-                    command.Parameters.AddWithValue("@Item_ID", item.ItemID);
                     command.Parameters.AddWithValue("@Item_Name", item.ItemName);
                     command.Parameters.AddWithValue("@Item_Img", item.ItemImg);
                     command.Parameters.AddWithValue("@Item_Price", item.ItemPrice);
                     command.Parameters.AddWithValue("@Item_Description", item.ItemDescription);
                     command.Parameters.AddWithValue("@Item_Type", item.ItemType);
+
                     try
                     {
-                        command.Connection.Open();
-                        int noOfRows = await command.ExecuteNonQueryAsync(); //bruges ved update, delete, insert
-                        if (noOfRows == 1)
-                        {
-                            return true;
-                        }
+                        await connection.OpenAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
 
-                        return false;
+                        return rowsAffected > 0; // Return true if rows were affected (insert successful)
                     }
                     catch (SqlException sqlex)
                     {
-                        Console.WriteLine("Database error");
+                        Console.WriteLine("Database error: " + sqlex.Message);
+                        // Handle database error
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Generel error");
+                        Console.WriteLine("General error: " + ex.Message);
+                        // Handle general error
                     }
                 }
-
             }
-            return false;
+
+            return false; // Insert failed
         }
+
 
         public async Task<Item> DeleteItemAsync(int itemID)
         {
@@ -140,14 +139,13 @@ namespace Jordnaer.Services
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-
                 using (SqlCommand command = new SqlCommand(SelectSQL, connection))
                 {
                     command.Parameters.AddWithValue("@Item_ID", itemId);
 
                     try
                     {
-                        command.Connection.Open();
+                        await connection.OpenAsync();
                         SqlDataReader reader = await command.ExecuteReaderAsync();
 
                         if (reader.HasRows)
@@ -171,17 +169,18 @@ namespace Jordnaer.Services
                     }
                     catch (SqlException sqlex)
                     {
-                        Console.WriteLine("Database error");
+                        Console.WriteLine("Database error: " + sqlex.Message);
+                        throw;
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("General error");
+                        Console.WriteLine("General error: " + ex.Message);
+                        throw;
                     }
                 }
             }
-
-            return null;
         }
+
 
 
         public Task<List<Item>> GetItemsByNameAsync(string name)
