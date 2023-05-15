@@ -1,0 +1,20 @@
+﻿@page
+@model Jordnaer.Pages.Items.DeleteModel
+@{
+    ViewData["Title"] = "Delete Item";
+}
+
+<h1>Delete Item</h1>
+
+@if (Model.Item == null)
+{
+    <div>Item not found.</div>
+}
+else
+{
+    <h2>Confirm deletion of item: @Model.Item.ItemName</h2>
+    <form method="post">
+        <input type="hidden" name="id" value="@Model.Item.ItemID" />
+        <button type="submit">Delete</button>
+    </form>
+}

@@ -1,0 +1,77 @@
+﻿@page
+@model Jordnaer.Pages.Items.CreateModel
+@{
+    ViewData["Title"] = "Create Item";
+}
+
+<h1>Create Item</h1>
+
+<div class="col-md-4">
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="itemName">Name</label>
+            <input asp-for="@Model.Item.ItemName" class="form-control" required />
+        </div>
+        @*        <div class="form-group">
+        <label asp-for="@Model.Photo" class="control-label"></label>
+        <div class="custom-file">
+        <input type="file" class="custom-file" id="Photo" name="@Model.Photo" required accept="image/jpeg, image/png, image/jfif">
+        <span asp-validation-for="@Model.Photo" class="text-danger"></span>
+        </div>*@
+        <div class="form-group">
+            <label asp-for="Item.ItemImg" class="control-label"></label>
+    <input         type="hidden" asp-for="Item.ItemImg" />
+    <div class="custom-file">
+                <input asp-for="Photo" class        ="custom-file-input" id="Photo"         name="Photo" required accept="image/jpeg, image/png, image/jfif" />
+        <span asp-validation-for="Photo" class="text-danger"></span>
+    </div>
+    <img id="img-preview" class="mt-2"style="max-width: 300px; max-height: 300px; display: none;" />
+</div>
+
+
+        <div class="form-group">
+            <label for="itemPrice">Price</label>
+            <input asp-for="@Model.Item.ItemPrice" class="form-control" required type="number" step="any" />
+        </div>
+        <div class="form-group">
+            <label for="itemDescription">Description</label>
+            <input asp-for="@Model.Item.ItemDescription" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="itemType">Type</label>
+            <select asp-for="@Model.Item.ItemType" class="form-control" required>
+                <option value="">--Select--</option>
+                <option value="Fødevare">Fødevare</option>
+                <option value="Dekoration">Dekoration</option>
+                <option value="Type3">Type3</option>
+            </select>
+            <span asp-validation-for="@Model.Item.ItemType" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+<script>
+    // Event listener that checks if an element with the ID 'Photo' and listens for when a file has been selected
+    document.getElementById('Photo').addEventListener('change', function () {
+        // retrieves the file selected
+        var file = this.files[0];
+        // If a file is selected
+        if (file) {
+            // Create a new FileReader object
+            var reader = new FileReader();
+            // Add an event listener to the reader to listen for when the file is loaded
+            reader.addEventListener('load', function () {
+                // Get the img element with the ID 'img-preview'
+                var imgPreview = document.getElementById('img-preview');
+                // Set the src attribute of the img element to the data URL of the loaded file
+                imgPreview.src = reader.result;
+                // displays well the image
+                imgPreview.style.display = 'block';
+            });
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
