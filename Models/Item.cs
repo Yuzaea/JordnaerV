@@ -8,7 +8,7 @@
         public string ItemName { get; set; }
         public string ItemImg { get; set; }
 
-        public double ItemPrice { get; set; }
+        public float ItemPrice { get; set; }
 
         public string ItemDescription { get; set; }
         public string ItemType { get; set; }
@@ -18,7 +18,7 @@
 
         }
 
-        public Item(int itemID, string itemName, string itemImg, double itemPrice, string itemDescription, string itemType)
+        public Item(int itemID, string itemName, string itemImg, float itemPrice, string itemDescription, string itemType)
         {
             ItemID = itemID;
             ItemName = itemName;

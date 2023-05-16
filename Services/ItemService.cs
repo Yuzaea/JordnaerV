@@ -12,7 +12,7 @@ namespace Jordnaer.Services
         private String DeleteSQL = "DELETE FROM Item WHERE Item_ID = @Item_ID";
         private String UpdateSQL = "UPDATE Item SET Item_Name = @Name, Item_Img = @Img, Item_Price = @Price, Item_Description = @Description, Item_Type = @Type WHERE Item_ID = @ID";
         private String ItemByNameSQl = "SELECT * FROM Item WHERE Item_Name LIKE @Name";
-
+        private string SelectByNameAndTypeSQL = "SELECT * FROM Item WHERE Item_Name = @Item_Name AND Item_Type = @Item_Type";
 
 
         public ItemService(IConfiguration configuration) : base(configuration)
@@ -180,6 +180,54 @@ namespace Jordnaer.Services
                 }
             }
         }
+
+        public async Task<Item> GetItemFromNameAndTypeAsync(string itemName, string itemType)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(SelectByNameAndTypeSQL, connection))
+                {
+                    command.Parameters.AddWithValue("@Item_Name", itemName);
+                    command.Parameters.AddWithValue("@Item_Type", itemType);
+
+                    try
+                    {
+                        await connection.OpenAsync();
+                        SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                        if (reader.HasRows)
+                        {
+                            await reader.ReadAsync();
+
+                            Item item = new Item
+                            {
+                                ItemID = reader.GetInt32(reader.GetOrdinal("Item_ID")),
+                                ItemName = itemName,
+                                ItemImg = reader.GetString(reader.GetOrdinal("Item_Img")),
+                                ItemPrice = reader.GetFloat(reader.GetOrdinal("Item_Price")),
+                                ItemDescription = reader.GetString(reader.GetOrdinal("Item_Description")),
+                                ItemType = itemType
+                            };
+
+                            return item;
+                        }
+
+                        return null;
+                    }
+                    catch (SqlException sqlex)
+                    {
+                        Console.WriteLine("Database error: " + sqlex.Message);
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("General error: " + ex.Message);
+                        throw;
+                    }
+                }
+            }
+        }
+
 
 
 

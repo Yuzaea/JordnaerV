@@ -45,5 +45,8 @@ namespace Jordnaer.Interfaces
         /// <param name="name">Angiver navn på item der hentes fra databasen</param>
         /// <returns>Liste af items med det givne navn</returns>
         Task<List<Item>> GetItemsByNameAsync(string name);
+
+
+        Task<Item> GetItemFromNameAndTypeAsync(string itemName, string itemType);
     }
 }
