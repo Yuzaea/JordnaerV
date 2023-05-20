@@ -8,7 +8,9 @@ namespace Jordnaer.Services
     {
 
 
-
+        private string insertOrderItemSQL = "INSERT INTO OrderItems (OrderId, ItemId, Quantity) VALUES (@OrderId, @ItemId, @Quantity)";
+        private string query = "SELECT * FROM OrderItems WHERE OrderId = @OrderId";
+        private string deleteOrderItemSQL = "DELETE FROM OrderItems WHERE OrderItemID = @OrderItemId";
 
 
 
@@ -61,14 +63,88 @@ namespace Jordnaer.Services
         }
 
 
-        public Task<List<OrderItem>> GetOrderItemsByOrderIdAsync(int orderId)
+        public async Task<List<OrderItem>> GetOrderItemsByOrderIdAsync(int orderId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@OrderId", orderId);
+
+                        List<OrderItem> orderItems = new List<OrderItem>();
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                OrderItem orderItem = new OrderItem(
+                                    (int)reader["OrderID"],
+                                    (int)reader["ItemID"],
+                                    (int)reader["Quantity"]
+                                );
+
+
+
+                                orderItems.Add(orderItem);
+                            }
+                        }
+
+                        return orderItems;
+                    }
+                }
+            }
+            catch (SqlException sqlex)
+            {
+                Console.WriteLine("Database error: " + sqlex.Message);
+                // Handle database error
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General error: " + ex.Message);
+                // Handle general error
+            }
+
+            return null; // Failed to retrieve order items
         }
 
-        public Task<bool> RemoveOrderItemAsync(int orderItemId)
+
+        public async Task<bool> RemoveOrderItemAsync(int orderItemId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    // Delete the order item from the database
+                    using (SqlCommand command = new SqlCommand(deleteOrderItemSQL, connection))
+                    {
+                        command.Parameters.AddWithValue("@OrderItemId", orderItemId);
+
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                        return rowsAffected > 0;
+                    }
+                }
+            }
+            catch (SqlException sqlex)
+            {
+                Console.WriteLine("Database error: " + sqlex.Message);
+                // Handle database error
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General error: " + ex.Message);
+                // Handle general error
+            }
+
+            return false; // Deletion failed
         }
+
     }
 }
