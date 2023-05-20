@@ -2,7 +2,7 @@
 using Jordnaer.Models;
 using System.Data.SqlClient;
 
-﻿namespace Jordnaer.Services
+namespace Jordnaer.Services
 {
     public class OrderService : Connection, IOrderService
     {
@@ -128,6 +128,8 @@ using System.Data.SqlClient;
 
 
         public Task<bool> UpdateOrderAsync(Orders order, int orderId)
-    {
+        {
+            throw new NotImplementedException();
+        }
     }
 }

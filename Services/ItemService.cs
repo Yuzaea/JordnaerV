@@ -106,12 +106,13 @@ namespace Jordnaer.Services
                         {
                             Item item = new Item()
                             {
-                                ItemID = reader.GetInt32(0),
-                                ItemName = reader.GetString(1),
-                                ItemImg = reader.GetString(2),
-                                ItemPrice = (float)reader.GetDouble(3),
-                                ItemDescription = reader.GetString(4),
-                                ItemType = reader.GetString(5)
+                                ItemName = reader.GetString(0),
+                                ItemID = reader.GetInt32(1),
+                                ItemPrice = (float)reader.GetDouble(2),
+                                ItemDescription = reader.GetString(3),
+                                ItemType = reader.GetString(4),
+                                ItemImg = reader.GetString(5),
+
                             };
                             items.Add(item);
                         }
