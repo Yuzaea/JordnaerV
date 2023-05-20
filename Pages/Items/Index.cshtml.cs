@@ -15,11 +15,11 @@ namespace Jordnaer.Pages.Items
             this.itemService = itemService;
         }
 
-        public List<Item> Items { get; set; }
+        public List<Item> Item { get; set; }
 
         public async Task OnGetAsync()
         {
-            Items = await itemService.GetAllItemsAsync();
+            Item = await itemService.GetAllItemsAsync();
         }
     }
 }

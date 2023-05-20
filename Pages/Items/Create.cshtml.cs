@@ -40,7 +40,7 @@ namespace Jordnaer.Pages.Items
             }
 
             await itemService.CreateItemAsync(Item);
-            return RedirectToPage("ShowAllItems");
+            return RedirectToPage("Index");
         }
 
         private async Task<string> ProcessUploadedFile()

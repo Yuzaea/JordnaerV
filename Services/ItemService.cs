@@ -10,9 +10,9 @@ namespace Jordnaer.Services
         private String SelectSQL = "SELECT * FROM Item WHERE Item_ID = @Item_ID";
         private String insertSQL = "INSERT INTO Item (Item_Name, Item_Img, Item_Price, Item_Description, Item_Type) VALUES (@Item_Name, @Item_Img, @Item_Price, @Item_Description, @Item_Type)";
         private String DeleteSQL = "DELETE FROM Item WHERE Item_ID = @Item_ID";
-        private String UpdateSQL = "UPDATE Item SET Item_Name = @Name, Item_Img = @Img, Item_Price = @Price, Item_Description = @Description, Item_Type = @Type WHERE Item_ID = @ID";
+        private string UpdateSQL = "UPDATE Item SET Item_Name = @Item_Name, Item_Img = @Item_Img, Item_Price = @Item_Price, Item_Description = @Item_Description, Item_Type = @Item_Type WHERE Item_ID = @Item_ID";
         private String ItemByNameSQl = "SELECT * FROM Item WHERE Item_Name LIKE @Name";
-        private string SelectByNameAndTypeSQL = "SELECT * FROM Item WHERE Item_Name = @Item_Name AND Item_Type = @Item_Type";
+        private string findHighestItemIdSQL = "SELECT MAX(Item_ID) FROM Items";
 
 
         public ItemService(IConfiguration configuration) : base(configuration)
@@ -89,8 +89,6 @@ namespace Jordnaer.Services
         }
 
 
-
-
         public async Task<List<Item>> GetAllItemsAsync()
         {
             List<Item> items = new List<Item>();
@@ -157,11 +155,12 @@ namespace Jordnaer.Services
                                 ItemID = reader.GetInt32(reader.GetOrdinal("Item_ID")),
                                 ItemName = reader.GetString(reader.GetOrdinal("Item_Name")),
                                 ItemImg = reader.GetString(reader.GetOrdinal("Item_Img")),
-                                ItemPrice = reader.GetFloat(reader.GetOrdinal("Item_Price")),
+                                ItemPrice = (float)reader.GetDouble(reader.GetOrdinal("Item_Price")),
                                 ItemDescription = reader.GetString(reader.GetOrdinal("Item_Description")),
                                 ItemType = reader.GetString(reader.GetOrdinal("Item_Type"))
                             };
 
+
                             return item;
                         }
 
@@ -181,62 +180,80 @@ namespace Jordnaer.Services
             }
         }
 
-        public async Task<Item> GetItemFromNameAndTypeAsync(string itemName, string itemType)
+        public async Task<int> FindHighestItemIdAsync()
+        {
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(findHighestItemIdSQL, connection))
+                {
+                    try
+                    {
+                        await connection.OpenAsync();
+                        object result = await command.ExecuteScalarAsync();
+
+                        if (result != null && int.TryParse(result.ToString(), out int highestItemId))
+                        {
+                            return highestItemId;
+                        }
+                    }
+                    catch (SqlException sqlex)
+                    {
+                        Console.WriteLine("Database error: " + sqlex.Message);
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("General error: " + ex.Message);
+                        throw;
+                    }
+                }
+            }
+
+            return 0; 
+        }
+
+
+        public async Task<bool> UpdateItemAsync(Item item, int itemId)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlCommand command = new SqlCommand(SelectByNameAndTypeSQL, connection))
+                using (SqlCommand command = new SqlCommand(UpdateSQL, connection))
                 {
-                    command.Parameters.AddWithValue("@Item_Name", itemName);
-                    command.Parameters.AddWithValue("@Item_Type", itemType);
+                    item.ItemID = itemId;
+                    command.Parameters.AddWithValue("@Item_Name", item.ItemName);
+                    command.Parameters.AddWithValue("@Item_Img", item.ItemImg);
+                    command.Parameters.AddWithValue("@Item_Price", item.ItemPrice);
+                    command.Parameters.AddWithValue("@Item_Description", item.ItemDescription);
+                    command.Parameters.AddWithValue("@Item_Type", item.ItemType);
+                    command.Parameters.AddWithValue("@Item_ID", item.ItemID);
 
                     try
                     {
                         await connection.OpenAsync();
-                        SqlDataReader reader = await command.ExecuteReaderAsync();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
 
-                        if (reader.HasRows)
-                        {
-                            await reader.ReadAsync();
-
-                            Item item = new Item
-                            {
-                                ItemID = reader.GetInt32(reader.GetOrdinal("Item_ID")),
-                                ItemName = itemName,
-                                ItemImg = reader.GetString(reader.GetOrdinal("Item_Img")),
-                                ItemPrice = reader.GetFloat(reader.GetOrdinal("Item_Price")),
-                                ItemDescription = reader.GetString(reader.GetOrdinal("Item_Description")),
-                                ItemType = itemType
-                            };
-
-                            return item;
-                        }
-
-                        return null;
+                        return rowsAffected > 0; // Return true if rows were affected (update successful)
                     }
                     catch (SqlException sqlex)
                     {
                         Console.WriteLine("Database error: " + sqlex.Message);
+
                         throw;
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine("General error: " + ex.Message);
+
                         throw;
                     }
                 }
             }
+
+            return false; //Shit failed ):
         }
-
-
-
 
         public Task<List<Item>> GetItemsByNameAsync(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateItemAsync(Item item, int itemId)
         {
             throw new NotImplementedException();
         }

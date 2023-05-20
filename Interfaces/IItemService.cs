@@ -46,7 +46,7 @@ namespace Jordnaer.Interfaces
         /// <returns>Liste af items med det givne navn</returns>
         Task<List<Item>> GetItemsByNameAsync(string name);
 
+        Task<int> FindHighestItemIdAsync();
 
-        Task<Item> GetItemFromNameAndTypeAsync(string itemName, string itemType);
     }
 }

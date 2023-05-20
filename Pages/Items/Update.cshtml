@@ -1,0 +1,71 @@
+﻿@page
+@model Jordnaer.Pages.Items.UpdateModel
+@{
+}
+
+<h1>Update Item</h1>
+
+<div class="col-md-4">
+    <form method="post" enctype="multipart/form-data" asp-page-handler="OnPost">
+        <input type="hidden" id="ItemId" name="ItemId" value="@Model.Item.ItemID" />
+
+
+        <div class="form-group">
+            <label for="Item_ItemName">Name:</label>
+            <input type="text" id="Item_ItemName" class="form-control" asp-for="Item.ItemName" required />
+            <span asp-validation-for="Item.ItemName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="Item_ItemImg">Image:</label>
+            <input type="hidden" id="Item_ItemImg" asp-for="Item.ItemImg" />
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="Photo" name="Photo" required accept="image/jpeg, image/png, image/jfif" />
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
+            <img id="img-preview" class="mt-2" style="max-width: 300px; max-height: 300px; display: none;" />
+        </div>
+
+        <div class="form-group">
+            <label for="Item_ItemPrice">Price:</label>
+            <input type="number" step="any" id="Item_ItemPrice" class="form-control" asp-for="Item.ItemPrice" required />
+            <span asp-validation-for="Item.ItemPrice" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="Item_ItemDescription">Description:</label>
+            <input type="text" id="Item_ItemDescription" class="form-control" asp-for="Item.ItemDescription" required />
+            <span asp-validation-for="Item.ItemDescription" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="Item_ItemType">Type:</label>
+            <select id="Item_ItemType" class="form-control" asp-for="Item.ItemType" required>
+                <option value="">--Select--</option>
+                <option value="Fødevare">Fødevare</option>
+                <option value="Dekoration">Dekoration</option>
+                <option value="Type3">Type3</option>
+            </select>
+            <span asp-validation-for="Item.ItemType" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Item</button>
+    </form>
+</div>
+
+
+<script>
+    document.getElementById('Photo').addEventListener('change', function () {
+        var file = this.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.addEventListener('load', function () {
+                var imgPreview = document.getElementById('img-preview');
+                imgPreview.src = reader.result;
+                imgPreview.style.display = 'block';
+            });
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+

@@ -15,10 +15,11 @@
             <th>Description</th>
             <th>Type</th>
             <th>Delete</th>
+            <th>Delete</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Items)
+        @foreach (var item in Model.Item)
         {
             <tr>
                 <td>@item.ItemID</td>
@@ -31,6 +32,11 @@
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
                 </td>
+                <td>
+                    <a href="/Items/Update?id=@item.ItemID" class="btn btn-danger">Update</a>
+                </td>
+
+
             </tr>
         }
     </tbody>

@@ -18,16 +18,7 @@
 
         }
 
-        public Item(int itemID, string itemName, string itemImg, float itemPrice, string itemDescription, string itemType)
-        {
-            ItemID = itemID;
-            ItemName = itemName;
-            ItemImg = itemImg;
-            ItemPrice = itemPrice;
-            ItemDescription = itemDescription;
-            ItemType = itemType;
 
-        }
 
     }
 }
