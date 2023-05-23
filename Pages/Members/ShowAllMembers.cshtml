@@ -1,0 +1,37 @@
+﻿@page
+@model Jordnaer.Pages.Members.ShowAllMembersModel
+@{
+    ViewData["Title"] = "Show Members";
+}
+
+<h2>Show All Members</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Delete</th>
+            <th>Update</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var member in Model.Members)
+        {
+            <tr>
+                <td>@member.MemberID</td>
+                <td>@member.Name</td>
+                <td>@member.Email</td>
+                <td>
+                    <form method="post" asp-page="Delete" asp-route-id="@member.MemberID" onsubmit="return confirm('Are you sure you want to delete this member?');">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+                <td>
+                    <a href="/Members/Update?id=@member.MemberID" class="btn btn-danger">Update</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

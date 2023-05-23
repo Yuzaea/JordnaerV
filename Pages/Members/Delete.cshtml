@@ -1,0 +1,20 @@
+﻿@page
+@model Jordnaer.Pages.Members.DeleteModel
+@{
+    ViewData["Title"] = "Delete Member";
+}
+
+<h1>Delete Member</h1>
+
+@if (Model.Member == null)
+{
+    <div>Member not found.</div>
+}
+else
+{
+    <h2>Confirm deletion of member: @Model.Member.Name</h2>
+    <form method="post">
+        <input type="hidden" name="id" value="@Model.Member.MemberID" />
+        <button type="submit">Delete</button>
+    </form>
+}

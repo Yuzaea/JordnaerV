@@ -1,5 +1,6 @@
 ﻿using Jordnaer.Interfaces;
 using Jordnaer.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 
@@ -7,12 +8,12 @@ namespace Jordnaer.Services
 {
     public class MemberService : Connection, IMemberService
     {
-        private string deleteSQL = "DELETE FROM Members WHERE Member_ID = @MemberId";
-        private string insertSQL = "INSERT INTO Members (Name, Email, Password) VALUES (@Name, @Email, @Password)";
-        private string HighestID = "SELECT MAX(Member_ID) FROM Members";
-        private string MemberBYID = "SELECT MemberID, Name, Email, Password FROM Members WHERE MemberID = @MemberID";
+        private string deleteSQL = "DELETE FROM Member WHERE MemberID = @MemberID";
+        private string insertSQL = "INSERT INTO Member (Name, Email, Password) VALUES (@Name, @Email, @Password)";
+        private string HighestID = "SELECT MAX(MemberID) FROM Member";
+        private string MemberBYID = "SELECT MemberID, Name, Email, Password FROM Member WHERE MemberID = @MemberID";
         private string UpdateMemberSQL = "UPDATE Member SET Name = @Name, Email = @Email, Password = @Password WHERE MemberID = @MemberID";
-
+        private String queryString = "select * from Member";
         private string GetMemberOrders = "SELECT OrderID, OrderDate, TotalPrice, MemberID FROM Orders WHERE MemberID = @MemberID";
         public MemberService(IConfiguration configuration) : base(configuration)
         {
@@ -69,7 +70,7 @@ namespace Jordnaer.Services
                     using (SqlCommand command = new SqlCommand(deleteSQL, connection))
                     {
                         // Set the parameter value
-                        command.Parameters.AddWithValue("@MemberId", memberId);
+                        command.Parameters.AddWithValue("@MemberID", memberId);
 
                         // Execute the query
                         int rowsAffected = await command.ExecuteNonQueryAsync();
@@ -257,6 +258,79 @@ namespace Jordnaer.Services
             }
 
             return false; // Member update failed or error occurred
+        }
+
+
+
+
+
+        public List<Member> GetAllMembers()
+        {
+            List<Member> members = new List<Member>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(queryString, connection))
+                {
+                    try
+                    {
+                        command.Connection.Open();
+                        SqlDataReader reader = command.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            Member member = new Member()
+                            {
+                                MemberID = reader.GetInt32(0),
+                                Name = reader.GetString(1),
+                                Email = reader.GetString(2),
+                                Password = reader.GetString(3),
+                                // Populate other member properties
+                            };
+                            members.Add(member);
+                        }
+
+                        reader.Close();
+                    }
+                    catch (SqlException sqlex)
+                    {
+                        Console.WriteLine("Database error");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("General error");
+                    }
+                }
+            }
+
+            return members;
+        }
+
+
+
+
+        public Member GetLoggedMember(string email)
+        {
+            if (email != null)
+            {
+                return GetAllMembers().Find(u => u.Email == email);
+            }
+            else
+                return null;
+        }
+
+        public Member VerifyMember(string email, string passWord)
+        {
+            foreach (var member in GetAllMembers())
+            {
+                if (email.Equals(member.Email) && passWord.Equals(member.Password))
+                {
+                    return member;
+                }
+
+            }
+            return null;
+
         }
     }
 }

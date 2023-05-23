@@ -1,0 +1,29 @@
+﻿@page
+@model Jordnaer.Pages.Orders.CreateModel
+@{
+}
+
+<html>
+<head>
+    <title>Create Order</title>
+
+</head>
+<body>
+    <h1>Create Order</h1>
+
+    <form method="post">
+        <div>
+            <label for="memberId">Member ID:</label>
+            <input type="text" id="memberId" name="memberId" required>
+        </div>
+
+        <div>
+            <label for="orderItems">Order Items:</label>
+            <textarea id="orderItems" name="orderItems" required></textarea>
+        </div>
+
+        <button type="submit">Create Order</button>
+    </form>
+
+</body>
+</html>

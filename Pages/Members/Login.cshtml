@@ -1,0 +1,30 @@
+﻿@page
+@model Jordnaer.Pages.Members.LoginModel
+@{
+}
+
+
+
+
+
+
+<h3>Login form</h3>
+@Model.Message
+<form method="post">
+    <table>
+        <tr>
+            <td>Email</td>
+            <td><Input type="text" asp-for="@Model.Email" /></td>
+        </tr>
+        <tr>
+            <td>Password</td>
+            <td><Input type="password" asp-for="@Model.PassWord" /></td>
+        </tr>
+        <tr>
+            <td>&nbsp</td>
+            <td><Input type="submit" value="Login" /></td>
+        </tr>
+        <a asp-page="CreateUser">Create a new user</a>
+    </table>
+
+</form>

@@ -11,5 +11,13 @@ namespace Jordnaer.Interfaces
         Task<int> FindHighestMemberIdAsync();
         Task<List<Orders>> GetMemberOrdersAsync(int memberId);
 
+
+        List<Member> GetAllMembers();
+
+        Member VerifyMember(string email, string passWord);
+
+        Member GetLoggedMember(string email);
+    }
+
 }
-}
+
