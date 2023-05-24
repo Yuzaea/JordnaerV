@@ -91,7 +91,7 @@ namespace Jordnaer.Pages.Orders
                     }
                     else
                     {
-                        // Invalid Quanity omr?de, ved ikke om der er nogen s?
+                        // Invalid quantity, handle the error
                     }
                 }
 
@@ -101,6 +101,7 @@ namespace Jordnaer.Pages.Orders
                 // Update the order with the total price
                 Jordnaer.Models.Orders order = new Jordnaer.Models.Orders
                 {
+                    OrderID = orderID,
                     OrderDate = DateTime.Now,
                     TotalPrice = totalPrice
                 };
@@ -110,13 +111,15 @@ namespace Jordnaer.Pages.Orders
                 if (orderUpdated)
                 {
                     // Order successfully created and updated
-                    return RedirectToPage("/Orders/Index");
+                    await orderItemService.AddOrderItemsAsync(orderID, orderItems);
+                    return RedirectToPage("Index");
                 }
             }
 
             // Failed to create order or update order
             return Page();
         }
+
 
 
     }

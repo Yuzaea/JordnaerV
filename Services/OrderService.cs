@@ -13,7 +13,6 @@ namespace Jordnaer.Services
         private string getPriceSQL = "SELECT Item_Price FROM Item WHERE Item_ID = @ItemID";
         private string UpdateSQL = "UPDATE Orders SET OrderDate = @OrderDate, TotalPrice = @TotalPrice WHERE OrderID = @OrderID";
         private string getOrderByIdSQL = "SELECT Order_ID, Order_Date, Total_Price, Member_ID FROM Orders WHERE Order_ID = @OrderID";
-        private string cancelOrderSQL = "UPDATE Orders SET OrderStatus = 'Cancelled'WHERE OrderID = @OrderID";
         private string deleteOrderSQL = "DELETE FROM Orders WHERE OrderID = @OrderID";
 
 
@@ -36,61 +35,26 @@ namespace Jordnaer.Services
                 {
                     await connection.OpenAsync();
 
-                    using (SqlCommand command = new SqlCommand(deleteOrderSQL, connection))
-                    {
-                        command.Parameters.AddWithValue("@OrderId", orderId);
-
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
-
-                        return rowsAffected > 0; // Return true if rows were affected (delete successful)
-                    }
-                }
-            }
-            catch (SqlException sqlex)
-            {
-                Console.WriteLine("Database error: " + sqlex.Message);
-                // Handle database error
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("General error: " + ex.Message);
-                // Handle general error
-            }
-
-            return false; // Delete failed
-        }
-
-        public async Task<bool> CancelOrderAsync(int orderId)
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    await connection.OpenAsync();
-
-                    // Check if the order exists
                     using (SqlCommand checkCommand = new SqlCommand(getOrderByIdSQL, connection))
                     {
-                        checkCommand.Parameters.AddWithValue("@OrderId", orderId);
+                        checkCommand.Parameters.AddWithValue("@OrderID", orderId);
 
                         using (SqlDataReader reader = await checkCommand.ExecuteReaderAsync())
                         {
                             if (!reader.HasRows)
                             {
-                                // Order with the specified ID was not found
                                 return false;
                             }
                         }
                     }
 
-                    // Update the order's status to cancelled
-                    using (SqlCommand command = new SqlCommand(cancelOrderSQL, connection))
+                    using (SqlCommand command = new SqlCommand(deleteOrderSQL, connection))
                     {
-                        command.Parameters.AddWithValue("@OrderId", orderId);
+                        command.Parameters.AddWithValue("@OrderID", orderId);
 
                         int rowsAffected = await command.ExecuteNonQueryAsync();
 
-                        return rowsAffected > 0; // Return true if rows were affected (update successful)
+                        return rowsAffected > 0;
                     }
                 }
             }
@@ -105,8 +69,9 @@ namespace Jordnaer.Services
                 // Handle general error
             }
 
-            return false; // Cancel operation failed
+            return false; // Delete operation failed
         }
+
 
         public async Task<Orders> GetOrderByIdAsync(int orderId)
         {
@@ -116,7 +81,7 @@ namespace Jordnaer.Services
 
                 using (SqlCommand command = new SqlCommand(getOrderByIdSQL, connection))
                 {
-                    command.Parameters.AddWithValue("@OrderId", orderId);
+                    command.Parameters.AddWithValue("@OrderID", orderId);
 
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
@@ -229,22 +194,22 @@ namespace Jordnaer.Services
 
                         int rowsAffected = await command.ExecuteNonQueryAsync();
 
-                        return rowsAffected > 0; // Return true if the order was updated successfully
+                        return rowsAffected > 0; 
                     }
                 }
             }
             catch (SqlException sqlex)
             {
                 Console.WriteLine("Database error: " + sqlex.Message);
-                // Handle database error
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine("General error: " + ex.Message);
-                // Handle general error
+
             }
 
-            return false; // Order update failed or error occurred
+            return false; 
         }
     }
 }

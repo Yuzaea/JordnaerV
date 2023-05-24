@@ -8,6 +8,6 @@ namespace Jordnaer.Interfaces
 
         Task<bool> AddOrderItemsAsync(int orderId, List<OrderItem> orderItems);
 
-        Task<bool> RemoveOrderItemAsync(int orderItemId);
+        //Task<bool> RemoveOrderItemAsync(int orderItemId);
     }
 }

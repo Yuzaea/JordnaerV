@@ -9,7 +9,7 @@ namespace Jordnaer.Interfaces
 
         Task<int> CreateOrderAsync(int memberId, List<OrderItem> orderItems);
 
-        Task<bool> CancelOrderAsync(int orderId);
+        Task<bool> DeleteOrderAsync(int orderId);
 
         Task<bool> UpdateOrderAsync(Orders order, int orderId);
 
