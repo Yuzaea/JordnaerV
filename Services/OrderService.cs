@@ -9,16 +9,12 @@ namespace Jordnaer.Services
     public class OrderService : Connection, IOrderService
     {
 
-        private string insertOrderSQL = "INSERT INTO Orders (MemberID, OrderDate, TotalPrice) VALUES (@MemberId, @OrderDate, @TotalPrice)";
-        private string getPriceSQL = "SELECT Item_Price FROM Item WHERE Item_ID = @ItemId";
+        private string insertOrderSQL = "INSERT INTO Orders (MemberID, OrderDate, TotalPrice) VALUES (@MemberID, @OrderDate, @TotalPrice)";
+        private string getPriceSQL = "SELECT Item_Price FROM Item WHERE Item_ID = @ItemID";
         private string UpdateSQL = "UPDATE Orders SET OrderDate = @OrderDate, TotalPrice = @TotalPrice WHERE OrderID = @OrderID";
-        private string getOrderByIdSQL = "SELECT Order_ID, Order_Date, Total_Price, Member_ID FROM Orders WHERE Order_ID = @OrderId";
-        private string cancelOrderSQL = "UPDATE Orders SET OrderStatus = 'Cancelled'WHERE OrderID = @OrderId";
-        private string deleteOrderSQL = "DELETE FROM Orders WHERE OrderID = @OrderId";
-
-
-
-
+        private string getOrderByIdSQL = "SELECT Order_ID, Order_Date, Total_Price, Member_ID FROM Orders WHERE Order_ID = @OrderID";
+        private string cancelOrderSQL = "UPDATE Orders SET OrderStatus = 'Cancelled'WHERE OrderID = @OrderID";
+        private string deleteOrderSQL = "DELETE FROM Orders WHERE OrderID = @OrderID";
 
 
         private readonly IOrderItemService orderItemService;
@@ -63,8 +59,6 @@ namespace Jordnaer.Services
 
             return false; // Delete failed
         }
-
-
 
         public async Task<bool> CancelOrderAsync(int orderId)
         {
@@ -114,7 +108,6 @@ namespace Jordnaer.Services
             return false; // Cancel operation failed
         }
 
-
         public async Task<Orders> GetOrderByIdAsync(int orderId)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -148,7 +141,7 @@ namespace Jordnaer.Services
 
         public float CalculateTotalPrice(List<OrderItem> orderItems)
         {
-            float totalPrice = 0;
+            double totalPrice = 0; // Use double instead of float
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -156,24 +149,26 @@ namespace Jordnaer.Services
 
                 foreach (var orderItem in orderItems)
                 {
-
                     using (SqlCommand command = new SqlCommand(getPriceSQL, connection))
                     {
-                        command.Parameters.AddWithValue("@ItemId", orderItem.ItemID);
-                        float itemPrice = (float)command.ExecuteScalar();
+                        command.Parameters.AddWithValue("@ItemID", orderItem.ItemID);
+                        double itemPrice = Convert.ToDouble(command.ExecuteScalar()); // Convert to double
 
                         // Calculate the subtotal for each order item and accumulate the total price
-                        float subtotal = orderItem.Quantity * itemPrice;
+                        double subtotal = orderItem.Quantity * itemPrice; // Use double for intermediate calculations
                         totalPrice += subtotal;
                     }
                 }
             }
 
-            return totalPrice;
+            return (float)totalPrice; // Cast the final total price back to float
         }
 
-        public async Task<bool> CreateOrderAsync(int memberId, List<OrderItem> orderItems)
+
+        public async Task<int> CreateOrderAsync(int memberId, List<OrderItem> orderItems)
         {
+            int orderId = 0;
+
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -188,27 +183,20 @@ namespace Jordnaer.Services
                         TotalPrice = CalculateTotalPrice(orderItems),
                     };
 
-                    // Insert the order into the database
-                    using (SqlCommand command = new SqlCommand(insertOrderSQL, connection))
+                    // Insert the order into the database and retrieve the generated OrderID
+                    using (SqlCommand command = new SqlCommand(insertOrderSQL + "; SELECT CAST(SCOPE_IDENTITY() AS INT)", connection))
                     {
-                        command.Parameters.AddWithValue("@MemberId", order.MemberID);
+                        command.Parameters.AddWithValue("@MemberID", order.MemberID);
                         command.Parameters.AddWithValue("@OrderDate", order.OrderDate);
                         command.Parameters.AddWithValue("@TotalPrice", order.TotalPrice);
 
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
-
-                        if (rowsAffected > 0)
+                        object result = await command.ExecuteScalarAsync();
+                        if (result != null && int.TryParse(result.ToString(), out orderId))
                         {
-                            // Retrieve the generated OrderId from the inserted row
-                            command.CommandText = "SELECT SCOPE_IDENTITY()";
-                            int orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
-
-                            // Add order items to the database
-                            await orderItemService.AddOrderItemsAsync(orderId, orderItems);
-
-                            return true;
+                            return orderId;
                         }
                     }
+                    
                 }
             }
             catch (SqlException sqlex)
@@ -222,11 +210,8 @@ namespace Jordnaer.Services
                 // Handle general error
             }
 
-            return false; // Insert failed
+            return 0;
         }
-
-  
-
 
 
         public async Task<bool> UpdateOrderAsync(Orders order, int orderId)

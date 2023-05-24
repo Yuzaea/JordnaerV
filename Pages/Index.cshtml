@@ -9,21 +9,46 @@
     <p class="lead">Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
+@if (!string.IsNullOrEmpty(Request.Query["errorMessage"]))
+{
+    <div class="alert alert-danger" role="alert">
+        @Request.Query["errorMessage"]
+    </div>
+}
+
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="#">Item</a>
+        <a class="navbar-brand">Stuff</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown">
-                    <button class="btn btn-dark dropdown-toggle" type="button" id="roomsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        Items stuff
+                    <button class="btn btn-dark dropdown-toggle" type="button" id="itemDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Item
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="roomsDropdown">
+                    <ul class="dropdown-menu" aria-labelledby="itemDropdown">
                         <li><a class="dropdown-item" href="/Items/Index">Show all items</a></li>
                         <li><a class="dropdown-item" href="/Items/Create">Create</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <button class="btn btn-dark dropdown-toggle" type="button" id="memberDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Member
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+                        <li><a class="dropdown-item" href="/Members/ShowAllMembers">Show all Members</a></li>
+                        <li><a class="dropdown-item" href="/Members/Create">Create</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <button class="btn btn-dark dropdown-toggle" type="button" id="ordersDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Orders
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="ordersDropdown">
+                        <li><a class="dropdown-item" href="/Orders/ShowAllOrders">Show all Orders</a></li>
+                        <li><a class="dropdown-item" href="/Orders/Create">Create</a></li>
                     </ul>
                 </li>
             </ul>
@@ -36,7 +61,7 @@
 @* så denne scrip inkludere en library kaldet Jquery. Bruger den så jeg kan bruge Bootstrap   *@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-@*  Bootstrap er her for at laver en dropdown menu, prøvede et på andre måder men ingen virkede så bruge bare boostrap so jeg kan gøre det (:. kommer fra 
+@*  Bootstrap er her for at laver en dropdown menu, prøvede et på andre måder men ingen virkede så bruger bare boostrap so jeg kan gøre det (:. kommer fra 
 https://getbootstrap.com/docs/4.0/components/dropdowns/*@
 
 

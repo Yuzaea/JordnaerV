@@ -15,10 +15,10 @@ namespace Jordnaer.Services
         private string UpdateMemberSQL = "UPDATE Member SET Name = @Name, Email = @Email, Password = @Password WHERE MemberID = @MemberID";
         private String queryString = "select * from Member";
         private string GetMemberOrders = "SELECT OrderID, OrderDate, TotalPrice, MemberID FROM Orders WHERE MemberID = @MemberID";
+        private string CheckForEmailSQL = "SELECT COUNT(*) FROM Member WHERE Email = @Email";
         public MemberService(IConfiguration configuration) : base(configuration)
         {
         }
-
 
         public async Task<bool> CreateMemberAsync(Member member)
         {
@@ -28,7 +28,13 @@ namespace Jordnaer.Services
                 {
                     await connection.OpenAsync();
 
-                    // Create a new SqlCommand with the query and connection
+                    // Check if the email already exists
+                    bool emailExists = await EmailExistsAsync(member.Email);
+                    if (emailExists)
+                    {
+                        return false;
+                    }
+
                     using (SqlCommand command = new SqlCommand(insertSQL, connection))
                     {
                         // Set the parameter values
@@ -36,11 +42,37 @@ namespace Jordnaer.Services
                         command.Parameters.AddWithValue("@Email", member.Email);
                         command.Parameters.AddWithValue("@Password", member.Password);
 
-                        // Execute the query
                         int rowsAffected = await command.ExecuteNonQueryAsync();
 
-                        // Return true if at least one row was affected (insert successful)
                         return rowsAffected > 0;
+                    }
+                }
+            }
+            catch (SqlException sqlex)
+            {
+                Console.WriteLine("Database error: " + sqlex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("General error: " + ex.Message);
+            }
+
+            return false;
+        }
+
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    using (SqlCommand command = new SqlCommand(CheckForEmailSQL, connection))
+                    {
+                        command.Parameters.AddWithValue("@Email", email);
+                        int count = (int)await command.ExecuteScalarAsync();
+                        return count > 0;
                     }
                 }
             }
@@ -52,10 +84,10 @@ namespace Jordnaer.Services
             catch (Exception ex)
             {
                 Console.WriteLine("General error: " + ex.Message);
-                // Handle general error
+
             }
 
-            return false; // Insert failed
+            return false;
         }
 
 
@@ -332,5 +364,18 @@ namespace Jordnaer.Services
             return null;
 
         }
+
+        public Member GetLoggedMemberID(int MemberID)
+        {
+            if (MemberID != null)
+            {
+                return GetAllMembers().Find(u => u.MemberID == MemberID);
+            }
+            else
+                return null;
+
+
+        }
+
     }
 }

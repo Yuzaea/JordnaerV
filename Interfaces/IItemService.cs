@@ -39,13 +39,6 @@ namespace Jordnaer.Interfaces
         /// <returns>Det item der er slettet fra databasen, returnerer null hvis item ikke findes</returns>
         Task<Item> DeleteItemAsync(int itemID);
 
-        /// <summary>
-        /// Henter alle items fra databasen, der har det givne navn
-        /// </summary>
-        /// <param name="name">Angiver navn på item der hentes fra databasen</param>
-        /// <returns>Liste af items med det givne navn</returns>
-        Task<List<Item>> GetItemsByNameAsync(string name);
-
         Task<int> FindHighestItemIdAsync();
 
     }

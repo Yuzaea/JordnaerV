@@ -1,4 +1,5 @@
 ﻿using Jordnaer.Models;
+using System.Data.SqlClient;
 
 namespace Jordnaer.Interfaces
 {
@@ -17,6 +18,13 @@ namespace Jordnaer.Interfaces
         Member VerifyMember(string email, string passWord);
 
         Member GetLoggedMember(string email);
+
+        Member GetLoggedMemberID(int memberId);
+
+
+        Task<bool> EmailExistsAsync(string email);
+
+
     }
 
 }

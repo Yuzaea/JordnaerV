@@ -10,21 +10,23 @@
 
 <h3>Login form</h3>
 @Model.Message
+<a class="btn btn-primary" asp-page="/Members/Create">Create a new user</a>
 <form method="post">
     <table>
         <tr>
             <td>Email</td>
-            <td><Input type="text" asp-for="@Model.Email" /></td>
+            <td><input type="text" asp-for="@Model.Email" /></td>
         </tr>
         <tr>
             <td>Password</td>
-            <td><Input type="password" asp-for="@Model.PassWord" /></td>
+            <td><input type="password" asp-for="@Model.PassWord" /></td>
         </tr>
         <tr>
-            <td>&nbsp</td>
-            <td><Input type="submit" value="Login" /></td>
+            <td>&nbsp;</td>
+            <td><input type="submit" value="Login" /></td>
         </tr>
-        <a asp-page="CreateUser">Create a new user</a>
     </table>
-
 </form>
+
+
+

@@ -1,5 +1,6 @@
 using Jordnaer.Interfaces;
 using Jordnaer.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace Jordnaer.Pages.Members
@@ -11,6 +12,10 @@ namespace Jordnaer.Pages.Members
 
         [BindProperty]
         public string PassWord { get; set; }
+
+        [BindProperty]
+        public int MemberID { get; set; }
+
 
         public string Message { get; set; }
 
@@ -44,7 +49,9 @@ namespace Jordnaer.Pages.Members
             Member loginUser = memberService.VerifyMember(Email, PassWord);
             if (loginUser != null)
             {
+                HttpContext.Session.SetInt32("MemberID", loginUser.MemberID);
                 HttpContext.Session.SetString("Email", loginUser.Email);
+                MemberID = loginUser.MemberID;
                 return RedirectToPage("/items/index");
             }
             else
@@ -54,8 +61,9 @@ namespace Jordnaer.Pages.Members
                 PassWord = "";
                 return Page();
             }
-
         }
+
+
     }
 }
 

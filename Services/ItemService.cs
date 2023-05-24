@@ -254,9 +254,5 @@ namespace Jordnaer.Services
             return false; //Shit failed ):
         }
 
-        public Task<List<Item>> GetItemsByNameAsync(string name)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

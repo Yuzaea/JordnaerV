@@ -1,29 +1,64 @@
 ﻿@page
 @model Jordnaer.Pages.Orders.CreateModel
 @{
+    ViewData["Title"] = "Create Order";
 }
+@if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+<h2>Create Order</h2>
 
-<html>
-<head>
-    <title>Create Order</title>
+<h3>Selected Items</h3>
 
-</head>
-<body>
-    <h1>Create Order</h1>
+<form method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Include in Order</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.ItemID</td>
+                    <td>@item.ItemName</td>
+                    <td>@item.ItemPrice</td>
+                    <td>@item.ItemDescription</td>
+                    <td>@item.ItemType</td>
+                    <td>
+                        <input type="checkbox" name="selectedItems" value="@item.ItemID" data-quantity-id="quantity-@item.ItemID" />
+                    </td>
+                    <td>
+                        <input type="number" min="1" value="01" name="itemQuantity[@item.ItemID]" id="quantity-@item.ItemID" style="display:none" required />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Create Order</button>
+</form>
 
-    <form method="post">
-        <div>
-            <label for="memberId">Member ID:</label>
-            <input type="text" id="memberId" name="memberId" required>
-        </div>
 
-        <div>
-            <label for="orderItems">Order Items:</label>
-            <textarea id="orderItems" name="orderItems" required></textarea>
-        </div>
+<script>
+    // Script to show/hide quantity input based on checkbox selection
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name="selectedItems"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const quantityId = this.getAttribute('data-quantity-id');
+            const quantityInput = document.getElementById(quantityId);
+            quantityInput.style.display = this.checked ? 'block' : 'none';
+        });
+    });
+</script>
 
-        <button type="submit">Create Order</button>
-    </form>
 
-</body>
-</html>

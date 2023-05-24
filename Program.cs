@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Jordnaer.Pages.Members;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,7 @@ builder.Services.AddTransient<IItemService, ItemService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IOrderItemService, OrderItemService>();
 builder.Services.AddTransient<IMemberService, MemberService>();
-
+builder.Services.AddScoped<ItemService>();
 // Add session support
 builder.Services.AddDistributedMemoryCache(); // Required for session storage
 builder.Services.AddSession(options =>
