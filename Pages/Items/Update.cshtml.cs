@@ -48,7 +48,7 @@ namespace Jordnaer.Pages.Items
                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + Photo.FileName;
                 string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                // Create the directory if it doesn't exist
+                // Creates a directory for the images  if it doesn't exist alaready
                 Directory.CreateDirectory(uploadsFolder);
 
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -68,7 +68,7 @@ namespace Jordnaer.Pages.Items
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "An error occurred while updating the item.");
+                ModelState.AddModelError(string.Empty, "Shit fucked");
                 return Page();
             }
         }

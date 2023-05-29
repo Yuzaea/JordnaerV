@@ -106,7 +106,7 @@ namespace Jordnaer.Services
 
         public float CalculateTotalPrice(List<OrderItem> orderItems)
         {
-            double totalPrice = 0; // Use double instead of float
+            double totalPrice = 0; 
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -117,16 +117,15 @@ namespace Jordnaer.Services
                     using (SqlCommand command = new SqlCommand(getPriceSQL, connection))
                     {
                         command.Parameters.AddWithValue("@ItemID", orderItem.ItemID);
-                        double itemPrice = Convert.ToDouble(command.ExecuteScalar()); // Convert to double
+                        double itemPrice = Convert.ToDouble(command.ExecuteScalar()); 
 
-                        // Calculate the subtotal for each order item and accumulate the total price
-                        double subtotal = orderItem.Quantity * itemPrice; // Use double for intermediate calculations
+                        double subtotal = orderItem.Quantity * itemPrice; 
                         totalPrice += subtotal;
                     }
                 }
             }
 
-            return (float)totalPrice; // Cast the final total price back to float
+            return (float)totalPrice; // Laver subtotal som er en double tilbage til float
         }
 
 
@@ -140,7 +139,7 @@ namespace Jordnaer.Services
                 {
                     await connection.OpenAsync();
 
-                    // Create a new order instance
+
                     Orders order = new Orders
                     {
                         MemberID = memberId,
@@ -148,7 +147,7 @@ namespace Jordnaer.Services
                         TotalPrice = CalculateTotalPrice(orderItems),
                     };
 
-                    // Insert the order into the database and retrieve the generated OrderID
+                    // 
                     using (SqlCommand command = new SqlCommand(insertOrderSQL + "; SELECT CAST(SCOPE_IDENTITY() AS INT)", connection))
                     {
                         command.Parameters.AddWithValue("@MemberID", order.MemberID);
@@ -167,12 +166,12 @@ namespace Jordnaer.Services
             catch (SqlException sqlex)
             {
                 Console.WriteLine("Database error: " + sqlex.Message);
-                // Handle database error
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine("General error: " + ex.Message);
-                // Handle general error
+
             }
 
             return 0;

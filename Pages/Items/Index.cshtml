@@ -14,9 +14,9 @@
             <th>Price</th>
             <th>Description</th>
             <th>Type</th>
-            <th>Quantity</th>
-            <th>Include in Order</th>
-            <th>Action</th>
+@*            <th>Quantity</th>
+            <th>Include in Order</th>*@
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -28,15 +28,15 @@
                 <td>@item.ItemPrice</td>
                 <td>@item.ItemDescription</td>
                 <td>@item.ItemType</td>
-                <td>
+@*                <td>
                     <input type="number" min="0" value="0" name="itemQuantity[@item.ItemID]" required />
-                </td>
-                <td>
+                </td>*@
+@*                <td>
                     <label>
                         <input type="checkbox" name="selectedItems" value="@item.ItemID" />
                         Include in Order
                     </label>
-                </td>
+                </td>*@
                 <td>
                     <td>
                         <form method="post" asp-page="Delete" asp-route-id="@item.ItemID" onsubmit="return confirm('Are you sure you want to delete this item?');">
@@ -55,46 +55,6 @@
     </table>
 
 
-
-@*<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var buttons = document.querySelectorAll('button[data-item-id]');
-        buttons.forEach(function (button) {
-            button.addEventListener('click', addToBasket);
-        });
-    });
-
-    // Event handler for the button click
-    function addToBasket(event) {
-        var button = event.target;
-        var itemId = button.dataset.itemId;
-        var quantityInput = document.getElementById('quantity-' + itemId);
-        var quantity = parseInt(quantityInput.value);
-
-        var item = {
-            itemId: itemId,
-            quantity: quantity
-        };
-
-        // Send the item data to the server to add it to the basket
-        fetch('/Basket/AddItem', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(item)
-        })
-            .then(function (response) {
-                // Handle the response from the server if needed
-                console.log('Item added to basket');
-            })
-            .catch(function (error) {
-                // Handle any errors that occur during the request
-                console.error('Failed to add item to basket', error);
-            });
-    }
-    }
-</script>*@
 
 
 

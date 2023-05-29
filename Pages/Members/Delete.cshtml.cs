@@ -34,7 +34,6 @@ namespace Jordnaer.Pages.Members
 
                     if (deletedMember == null)
                     {
-                        // Deletion failed
                         ModelState.AddModelError(string.Empty, "Failed to delete the member.");
                         return Page();
                     }
@@ -43,7 +42,7 @@ namespace Jordnaer.Pages.Members
                 }
                 catch (Exception ex)
                 {
-                    // Handle any exceptions that may occur during deletion
+
                     ModelState.AddModelError(string.Empty, "An error occurred while deleting the member.");
                     return Page();
                 }

@@ -83,7 +83,7 @@ namespace Jordnaer.Services
                             {
                                 OrderItem orderItem = new OrderItem(
                                     (int)reader["OrderID"],
-                                    (int)reader["ItemID"],
+                                    (int)reader["Item_ID"],
                                     (int)reader["Quantity"]
                                 );
 
@@ -100,15 +100,15 @@ namespace Jordnaer.Services
             catch (SqlException sqlex)
             {
                 Console.WriteLine("Database error: " + sqlex.Message);
-                // Handle database error
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine("General error: " + ex.Message);
-                // Handle general error
+
             }
 
-            return null; // Failed to retrieve order items
+            return null; 
         }
 
 
@@ -134,15 +134,15 @@ namespace Jordnaer.Services
         //    catch (SqlException sqlex)
         //    {
         //        Console.WriteLine("Database error: " + sqlex.Message);
-        //        Handle database error
+
         //    }
         //    catch (Exception ex)
         //    {
         //        Console.WriteLine("General error: " + ex.Message);
-        //        Handle general error
+
         //    }
 
-        //    return false; // Deletion failed
+        //    return false; 
         //}
 
     }

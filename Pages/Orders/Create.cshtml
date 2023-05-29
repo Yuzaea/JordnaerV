@@ -39,7 +39,7 @@
                         <input type="checkbox" name="selectedItems" value="@item.ItemID" data-quantity-id="quantity-@item.ItemID" />
                     </td>
                     <td>
-                        <input type="number" min="1" value="01" name="itemQuantity[@item.ItemID]" id="quantity-@item.ItemID" style="display:none" required />
+                        <input type="number" min="1" value="1" name="itemQuantity[@item.ItemID]" id="quantity-@item.ItemID" style="display:none" required />
                     </td>
                 </tr>
             }
@@ -50,7 +50,7 @@
 
 
 <script>
-    // Script to show/hide quantity input based on checkbox selection
+    // Script to show/ unshow based on clicky box
     const checkboxes = document.querySelectorAll('input[type="checkbox"][name="selectedItems"]');
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function () {

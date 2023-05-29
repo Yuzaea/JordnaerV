@@ -28,7 +28,7 @@ namespace Jordnaer.Services
                 {
                     await connection.OpenAsync();
 
-                    // Check if the email already exists
+                    // Checksif the email already exists
                     bool emailExists = await EmailExistsAsync(member.Email);
                     if (emailExists)
                     {
@@ -37,7 +37,7 @@ namespace Jordnaer.Services
 
                     using (SqlCommand command = new SqlCommand(insertSQL, connection))
                     {
-                        // Set the parameter values
+
                         command.Parameters.AddWithValue("@Name", member.Name);
                         command.Parameters.AddWithValue("@Email", member.Email);
                         command.Parameters.AddWithValue("@Password", member.Password);
@@ -79,7 +79,7 @@ namespace Jordnaer.Services
             catch (SqlException sqlex)
             {
                 Console.WriteLine("Database error: " + sqlex.Message);
-                // Handle database error
+
             }
             catch (Exception ex)
             {
@@ -101,13 +101,12 @@ namespace Jordnaer.Services
 
                     using (SqlCommand command = new SqlCommand(deleteSQL, connection))
                     {
-                        // Set the parameter value
+
                         command.Parameters.AddWithValue("@MemberID", memberId);
 
-                        // Execute the query
+
                         int rowsAffected = await command.ExecuteNonQueryAsync();
 
-                        // Return true if at least one row was affected (deletion successful)
                         return rowsAffected > 0;
                     }
                 }
@@ -115,15 +114,15 @@ namespace Jordnaer.Services
             catch (SqlException sqlex)
             {
                 Console.WriteLine("Database error: " + sqlex.Message);
-                // Handle database error
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine("General error: " + ex.Message);
-                // Handle general error
+
             }
 
-            return false; // Deletion failed
+            return false; 
         }
 
 
@@ -135,13 +134,12 @@ namespace Jordnaer.Services
                 {
                     await connection.OpenAsync();
 
-                    // Create a new SqlCommand with the query and connection
                     using (SqlCommand command = new SqlCommand(HighestID, connection))
                     {
-                        // Execute the query and retrieve the result
+
                         object result = await command.ExecuteScalarAsync();
 
-                        // Check if the result is null and convert it to an int
+
                         if (result != null && int.TryParse(result.ToString(), out int highestMemberId))
                         {
                             return highestMemberId;
@@ -152,15 +150,15 @@ namespace Jordnaer.Services
             catch (SqlException sqlex)
             {
                 Console.WriteLine("Database error: " + sqlex.Message);
-                // Handle database error
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine("General error: " + ex.Message);
-                // Handle general error
+
             }
 
-            return 0; // Return 0 if the highest member ID was not found or an error occurred
+            return 0; 
         }
 
 
@@ -199,15 +197,15 @@ namespace Jordnaer.Services
             catch (SqlException sqlex)
             {
                 Console.WriteLine("Database error: " + sqlex.Message);
-                // Handle database error
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine("General error: " + ex.Message);
-                // Handle general error
+
             }
 
-            return null; // Member not found or error occurred
+            return null; 
         }
 
         public async Task<List<Orders>> GetMemberOrdersAsync(int memberId)
@@ -246,15 +244,15 @@ namespace Jordnaer.Services
             catch (SqlException sqlex)
             {
                 Console.WriteLine("Database error: " + sqlex.Message);
-                // Handle database error
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine("General error: " + ex.Message);
-                // Handle general error
+
             }
 
-            return null; // Member orders not found or error occurred
+            return null;
         }
 
         public async Task<bool> UpdateMemberAsync(Member member, int memberId)
@@ -274,27 +272,23 @@ namespace Jordnaer.Services
 
                         int rowsAffected = await command.ExecuteNonQueryAsync();
 
-                        return rowsAffected > 0; // Return true if the member was updated successfully
+                        return rowsAffected > 0; 
                     }
                 }
             }
             catch (SqlException sqlex)
             {
                 Console.WriteLine("Database error: " + sqlex.Message);
-                // Handle database error
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine("General error: " + ex.Message);
-                // Handle general error
+
             }
 
-            return false; // Member update failed or error occurred
+            return false; 
         }
-
-
-
-
 
         public List<Member> GetAllMembers()
         {
@@ -317,7 +311,6 @@ namespace Jordnaer.Services
                                 Name = reader.GetString(1),
                                 Email = reader.GetString(2),
                                 Password = reader.GetString(3),
-                                // Populate other member properties
                             };
                             members.Add(member);
                         }
@@ -337,8 +330,6 @@ namespace Jordnaer.Services
 
             return members;
         }
-
-
 
 
         public Member GetLoggedMember(string email)

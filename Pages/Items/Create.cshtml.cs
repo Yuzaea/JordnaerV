@@ -52,7 +52,7 @@ namespace Jordnaer.Pages.Items
                 uniqueFileName = Guid.NewGuid().ToString() + "_" + Photo.FileName;
                 string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                // Create the directory if it doesn't exist
+                // Create the directory if it doesn't exist (:_
                 Directory.CreateDirectory(uploadsFolder);
 
                 using (var fileStream = new FileStream(filePath, FileMode.Create))

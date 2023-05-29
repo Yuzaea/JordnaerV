@@ -91,32 +91,29 @@ namespace Jordnaer.Pages.Orders
                     }
                     else
                     {
-                        // Invalid quantity, handle the error
+                        // not so naynay quantity
                     }
                 }
 
-                // Calculate the total price
                 float totalPrice = orderService.CalculateTotalPrice(orderItems);
 
-                // Update the order with the total price
                 Jordnaer.Models.Orders order = new Jordnaer.Models.Orders
                 {
                     OrderID = orderID,
                     OrderDate = DateTime.Now,
                     TotalPrice = totalPrice
                 };
-
+                 //opdatere orderen med den pris der er fundet i CalculateTotalPrice metoden
                 bool orderUpdated = await orderService.UpdateOrderAsync(order, orderID);
 
                 if (orderUpdated)
                 {
-                    // Order successfully created and updated
                     await orderItemService.AddOrderItemsAsync(orderID, orderItems);
                     return RedirectToPage("Index");
                 }
             }
 
-            // Failed to create order or update order
+
             return Page();
         }
 

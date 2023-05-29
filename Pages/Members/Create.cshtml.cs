@@ -27,11 +27,10 @@ namespace Jordnaer.Pages.Members
 
             if (memberCreated)
             {
-                return RedirectToPage("Index");
+                return RedirectToPage("/Members/ShowAllMembers");
             }
             else
             {
-                // Handle member creation failure
                 return RedirectToPage("Error");
             }
         }

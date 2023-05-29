@@ -36,22 +36,22 @@ namespace Jordnaer.Services
                         await connection.OpenAsync();
                         int rowsAffected = await command.ExecuteNonQueryAsync();
 
-                        return rowsAffected > 0; // Return true if rows were affected (insert successful)
+                        return rowsAffected > 0;
                     }
                     catch (SqlException sqlex)
                     {
                         Console.WriteLine("Database error: " + sqlex.Message);
-                        // Handle database error
+
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine("General error: " + ex.Message);
-                        // Handle general error
+
                     }
                 }
             }
 
-            return false; // Insert failed
+            return false; 
         }
 
 
@@ -70,7 +70,7 @@ namespace Jordnaer.Services
                         int noOfRows = await deleteCommand.ExecuteNonQueryAsync();
                         if (noOfRows == 1)
                         {
-                            // Deletion successful, return a dummy Item object with the deleted item's ID
+
                             return new Item { ItemID = itemID };
                         }
                     }
@@ -85,7 +85,7 @@ namespace Jordnaer.Services
                 }
             }
 
-            return null; // Deletion failed
+            return null; 
         }
 
 
@@ -214,7 +214,6 @@ namespace Jordnaer.Services
             return 0; 
         }
 
-
         public async Task<bool> UpdateItemAsync(Item item, int itemId)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -234,24 +233,23 @@ namespace Jordnaer.Services
                         await connection.OpenAsync();
                         int rowsAffected = await command.ExecuteNonQueryAsync();
 
-                        return rowsAffected > 0; // Return true if rows were affected (update successful)
+                        return rowsAffected > 0;
                     }
                     catch (SqlException sqlex)
                     {
                         Console.WriteLine("Database error: " + sqlex.Message);
 
-                        throw;
+                        throw; //Shit failed ):
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine("General error: " + ex.Message);
 
-                        throw;
+                        throw; //Shit failed ):
                     }
                 }
             }
 
-            return false; //Shit failed ):
         }
 
     }

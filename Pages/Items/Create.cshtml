@@ -56,11 +56,8 @@
         if (file) {
             // Create a new FileReader object
             var reader = new FileReader();
-            // Add an event listener to the reader to listen for when the file is loaded
             reader.addEventListener('load', function () {
-                // Gets the img element with the ID 'img-preview'
                 var imgPreview = document.getElementById('img-preview');
-                // Set the src attribute of the img element to the data URL of the loaded file
                 imgPreview.src = reader.result;
                 // displays well the image
                 imgPreview.style.display = 'block';

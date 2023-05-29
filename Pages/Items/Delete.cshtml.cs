@@ -37,7 +37,7 @@ namespace Jordnaer.Pages.Items
 
                 if (deletedItem == null)
                 {
-                    // Deletion failed
+
                     ModelState.AddModelError(string.Empty, "Failed to delete the item.");
                     return Page();
                 }
@@ -46,7 +46,7 @@ namespace Jordnaer.Pages.Items
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that may occur during deletion
+
                 ModelState.AddModelError(string.Empty, "An error occurred while deleting the item.");
                 return Page();
             }
